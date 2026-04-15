@@ -1,5 +1,6 @@
 import streamlit as st 
-from PyPDF2 import PdfReader
+from langchain_community.document_loaders import PyPDFLoader
+import tempfile
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -30,11 +31,14 @@ st.subheader('Your Intelligent Document Assistant 🔍')
 uploaded_file=st.file_uploader('Upload your file here in PDF format 📤')
 
 if uploaded_file:
-    pdf=PdfReader(uploaded_file)
-    
-    raw_text=''
-    for page in pdf.pages:
-        raw_text += page.extract_text()
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
+        tmp_file.write(uploaded_file.read())
+        tmp_path = tmp_file.name
+
+    loader = PyPDFLoader(tmp_path)
+    documents = loader.load()
+
+    raw_text = " ".join([doc.page_content for doc in documents])
         
     if raw_text.strip():
         # remove spaces and check whether we have tect data and ensure that given raw_text is not empty
