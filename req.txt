@@ -1,7 +1,7 @@
 streamlit
 python-dotenv
 google-generativeai
-pypdf
+PyPDF2
 
 langchain # core frameworks
 langchain-community # extra integration
